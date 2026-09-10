@@ -234,7 +234,8 @@ function updateNodes(parent: NodeInfo, obj: Record<any, any> | Array<any> | unde
         for (let i = 0; i < lengthPrev; i++) {
             const key = keysPrev[i];
             // Fast path for same-position keys, then Set lookup for large key lists to avoid quadratic scans.
-            if (keys[i] === key) continue;
+            // Map keys can be undefined, so an out-of-bounds read must not count as a match.
+            if (i < length && keys[i] === key) continue;
             if (!keySet && keys.length > 32 && lengthPrev > 32) keySet = new Set(keys);
             if (!(keySet ? keySet.has(key) : keys.includes(key))) {
                 hasADiff = true;
